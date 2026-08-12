@@ -122,17 +122,22 @@ btnAceptar.addEventListener('click', async () => {
   mensajeAceptacion.style.color = 'blue';
   mensajeAceptacion.textContent = '⏳ Registrando firma digital y validando datos...';
   
-  // Obtener IP y Dispositivo
+// 1. OBTENER IP CON LÍMITE DE 3 SEGUNDOS PARA EVITAR CONGELAMIENTOS
   let ipUsuario = 'Desconocida';
   try {
-    const resIp = await fetch('https://api.ipify.org?format=json');
+    const controlador = new AbortController();
+    const idTiempo = setTimeout(() => controlador.abort(), 3000); // Límite de 3 segundos
+    
+    const resIp = await fetch('https://api.ipify.org?format=json', { signal: controlador.signal });
+    clearTimeout(idTiempo); // Apaga el cronómetro si respondió rápido
+    
     const dataIp = await resIp.json();
     ipUsuario = dataIp.ip;
   } catch (e) {
-    console.warn('No se pudo obtener la IP.');
+    console.warn('La IP tardó demasiado. Se avanza sin ella para no hacer esperar al usuario.');
   }
   
-  const datosDispositivo = navigator.userAgent; 
+  const datosDispositivo = navigator.userAgent;
   
   // Enviar al Backend
   const resultado = await llamarBackend('aceptarResponsabilidades', { 
