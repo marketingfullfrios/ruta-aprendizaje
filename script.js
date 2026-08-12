@@ -1,7 +1,7 @@
 // ============================
 // CONFIGURACIÓN
 // ============================
-const API_URL = 'https://script.google.com/macros/s/AKfycbxyQ28yTG_13N3WZtEB4aixe8PoHFtglRHEJlMnQMf3_67GQiTjbcbrq0vlDaF_E5Hd/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyRmWrB__rDdRl8NZeCCVbD5r_dMhMrkgLASsatyo1_9xjTj02mZtgERUvrKryo5W_p/exec';
 
 // Elementos del DOM
 const pantallaLogin = document.getElementById('pantalla-login');
