@@ -42,51 +42,61 @@ async function llamarBackend(accion, datos = {}) {
 // ============================
 // MANEJO DEL LOGIN (Pantalla 1)
 // ============================
-// ============================
-// MANEJO DEL LOGIN (Pantalla 1)
-// ============================
 formLogin.addEventListener('submit', async (e) => {
   e.preventDefault();
   const cedula = cedulaInput.value.trim();
   
+  // Buscar el botón de enviar para bloquearlo también (opcional pero recomendado)
+  const btnSubmit = formLogin.querySelector('button[type="submit"]') || formLogin.querySelector('button');
+
   if (!cedula) {
     mensajeError.style.color = 'red';
     mensajeError.textContent = 'Por favor ingresa tu cédula.';
     return;
   }
   
-  // 1. ESTADO DE ESPERA
-  mensajeError.style.color = 'blue'; // Puedes cambiar el color según tu diseño
-  mensajeError.textContent = '⏳ Verificando, por favor espera...';
-  cedulaInput.disabled = true; // Bloqueamos el input mientras consulta
-  
-  // Llamada al backend
-  const resultado = await llamarBackend('verificarUsuario', { cedula });
-  
-  // Desbloqueamos el input en cuanto llega la respuesta
-  cedulaInput.disabled = false; 
-  
-  // 2. ESTADO DE NO AUTORIZADO / NO REGISTRADO
-  if (!resultado.success) {
+  try {
+    // 1. ESTADO DE ESPERA
+    mensajeError.style.color = 'blue';
+    mensajeError.textContent = '⏳ Verificando, por favor espera...';
+    cedulaInput.disabled = true;
+    if (btnSubmit) btnSubmit.disabled = true;
+    
+    // Llamada al backend
+    const resultado = await llamarBackend('verificarUsuario', { cedula });
+    
+    // 2. ESTADO DE NO AUTORIZADO / ERROR DEL BACKEND
+    if (!resultado || !resultado.success) {
+      mensajeError.style.color = 'red';
+      mensajeError.textContent = '❌ ' + (resultado?.mensaje || 'Usted no está autorizado.');
+      return;
+    }
+    
+    // Limpiamos el mensaje si todo sale bien
+    mensajeError.textContent = '';
+    
+    // Si el usuario ya aceptó, ir al dashboard
+    if (resultado.yaAcepto) {
+      localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
+      window.location.href = 'dashboard.html'; 
+      return;
+    }
+    
+    // Mostrar la pantalla de aceptación
+    mostrarPantallaAceptacion(resultado.usuario);
+
+  } catch (error) {
+    // 3. CAPTURA DE ERRORES INESPERADOS (Si el código "se cae")
+    console.error('Error procesando el login:', error);
     mensajeError.style.color = 'red';
-    // El backend enviará: "Usuario no autorizado..." o "Cédula no registrada..."
-    // Le agregamos un ícono para que sea más visible
-    mensajeError.textContent = '❌ ' + (resultado.mensaje || 'Usted no está autorizado.');
-    return;
+    mensajeError.textContent = '❌ Ocurrió un error en el sistema. Intenta de nuevo.';
+  } finally {
+    // 4. ESTO SE EJECUTA SIEMPRE (Libera la interfaz aunque haya error)
+    cedulaInput.disabled = false;
+    if (btnSubmit) btnSubmit.disabled = false;
+    // Hacemos focus para que el usuario pueda escribir de nuevo rápido
+    cedulaInput.focus(); 
   }
-  
-  // Limpiamos el mensaje si todo sale bien
-  mensajeError.textContent = '';
-  
-  // Si el usuario ya aceptó anteriormente, redirigir directamente al dashboard
-  if (resultado.yaAcepto) {
-    localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
-    window.location.href = 'dashboard.html'; 
-    return;
-  }
-  
-  // Mostrar la segunda pantalla con los datos
-  mostrarPantallaAceptacion(resultado.usuario);
 });
 
 function mostrarPantallaAceptacion(usuario) {
