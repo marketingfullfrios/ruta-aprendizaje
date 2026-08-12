@@ -1,7 +1,8 @@
 // ============================
 // CONFIGURACIÓN
 // ============================
-const API_URL = 'https://script.google.com/macros/s/AKfycbwHtqXBshtSSy6TSTITPV13KDXj6q-sgah6qJA04ylwLETDl1cLE1EngUuWfTS_TJkC/exec';
+// Asegúrate de que esta URL sea la correcta de tu última implementación
+const API_URL = 'https://script.google.com/macros/s/AKfycbxhoVZk32fsK4Nuq_pd2Y89r2bZmaavT7Ibye0v5u7AUekAcZVYZogMXd0T8E3lQAfm/exec';
 
 // Elementos del DOM
 const pantallaLogin = document.getElementById('pantalla-login');
@@ -68,22 +69,20 @@ formLogin.addEventListener('submit', async (e) => {
     // Limpiamos el mensaje si todo sale bien
     mensajeError.textContent = '';
     
-    // 3. REDIRECCIÓN O PANTALLA DE ACEPTACIÓN
+    // 3. REDIRECCIÓN TEMPORAL A FULLFRIOS SI YA ACEPTÓ ANTES
     if (resultado.yaAcepto) {
       localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
-      window.location.href = 'dashboard.html'; 
+      window.location.href = 'https://fullfrios.com'; 
       return;
     }
     
     mostrarPantallaAceptacion(resultado.usuario);
 
   } catch (error) {
-    // Si algo catastrófico pasa, no se congela la pantalla
     console.error('Error en el login:', error);
     mensajeError.style.color = 'red';
     mensajeError.textContent = '❌ Ocurrió un error en el sistema. Intenta de nuevo.';
   } finally {
-    // Siempre desbloqueamos el input al terminar (ya sea éxito o error)
     cedulaInput.disabled = false; 
   }
 });
@@ -109,14 +108,13 @@ function mostrarPantallaAceptacion(usuario) {
 // ACEPTACIÓN DE RESPONSABILIDADES (Pantalla 2)
 // ============================
 btnAceptar.addEventListener('click', async () => {
-  // --- NUEVA VALIDACIÓN LEGAL ---
+  // Validación del Checkbox Legal
   const checkLegal = document.getElementById('checkLegal');
   if (!checkLegal.checked) {
     mensajeAceptacion.style.color = 'red';
     mensajeAceptacion.textContent = '❌ Debes marcar la casilla para aceptar los términos.';
-    return; // Evita que el código continúe si no ha marcado la casilla
+    return; 
   }
-  // ------------------------------
 
   const cedula = btnAceptar.dataset.cedula;
   btnAceptar.disabled = true;
@@ -124,33 +122,32 @@ btnAceptar.addEventListener('click', async () => {
   mensajeAceptacion.style.color = 'blue';
   mensajeAceptacion.textContent = '⏳ Registrando firma digital y validando datos...';
   
-  // 1. OBTENER DATOS LEGALES (IP y Dispositivo)
+  // Obtener IP y Dispositivo
   let ipUsuario = 'Desconocida';
   try {
-    // Llamada rápida a una API pública para ver la IP
     const resIp = await fetch('https://api.ipify.org?format=json');
     const dataIp = await resIp.json();
     ipUsuario = dataIp.ip;
   } catch (e) {
-    console.warn('No se pudo obtener la IP, el firewall del usuario podría estar bloqueándolo.');
+    console.warn('No se pudo obtener la IP.');
   }
   
-  const datosDispositivo = navigator.userAgent; // Ej: Chrome en Windows, Safari en iPhone
+  const datosDispositivo = navigator.userAgent; 
   
-  // 2. ENVIAR AL BACKEND
+  // Enviar al Backend
   const resultado = await llamarBackend('aceptarResponsabilidades', { 
     cedula: cedula,
     ip: ipUsuario,
     dispositivo: datosDispositivo
   });
   
-  // 3. RESPUESTA
+  // RESPUESTA Y REDIRECCIÓN TEMPORAL A FULLFRIOS AL ACEPTAR POR PRIMERA VEZ
   if (resultado.success) {
     mensajeAceptacion.style.color = 'green';
     mensajeAceptacion.textContent = '✅ Aceptación legal registrada con éxito. Redirigiendo...';
     
     setTimeout(() => {
-      window.location.href = 'dashboard.html';
+      window.location.href = 'https://fullfrios.com';
     }, 1500);
   } else {
     mensajeAceptacion.style.color = 'red';
