@@ -1,7 +1,7 @@
 // ============================
 // CONFIGURACIÓN
 // ============================
-const API_URL = 'https://script.google.com/macros/s/AKfycbzmtEEeCS5zSTXE95CVxs1haSqRVuxmEGfap4RVgsYWDeLshTi_26me8it1SXYMOLIn/exec'; // Reemplaza con la URL de tu App Script
+const API_URL = 'https://corsproxy.io/?https://script.google.com/macros/s/AKfycbzXvENh5Y5w-xqFCoRqy4KWqBrViRuXjOT0syQeXvRKay6qMgKpTU-CzhORsGnQW02G/exec';
 
 // Elementos del DOM
 const pantallaLogin = document.getElementById('pantalla-login');
