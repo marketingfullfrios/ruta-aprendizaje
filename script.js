@@ -1,7 +1,8 @@
 // ============================
 // CONFIGURACIÓN
 // ============================
-const API_URL = 'https://corsproxy.io/?https://script.google.com/macros/s/AKfycbzXvENh5Y5w-xqFCoRqy4KWqBrViRuXjOT0syQeXvRKay6qMgKpTU-CzhORsGnQW02G/exec';
+// Quitamos el proxy. Usa tu URL de Google Apps Script directamente.
+const API_URL = 'https://script.google.com/macros/s/AKfycbxyQ28yTG_13N3WZtEB4aixe8PoHFtglRHEJlMnQMf3_67GQiTjbcbrq0vlDaF_E5Hd/exec';
 
 // Elementos del DOM
 const pantallaLogin = document.getElementById('pantalla-login');
@@ -21,13 +22,15 @@ async function llamarBackend(accion, datos = {}) {
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
+      // CAMBIO CLAVE 1: Usar text/plain evita el bloqueo de CORS (preflight OPTIONS)
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain;charset=utf-8',
       },
+      // CAMBIO CLAVE 2: Google siempre responde con un 302 Redirect, debemos seguirlo
+      redirect: 'follow', 
       body: JSON.stringify({ accion, ...datos })
     });
+    
     const resultado = await response.json();
     return resultado;
   } catch (error) {
