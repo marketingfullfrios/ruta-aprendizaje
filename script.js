@@ -112,15 +112,33 @@ btnAceptar.addEventListener('click', async () => {
   const cedula = btnAceptar.dataset.cedula;
   btnAceptar.disabled = true;
   
-  // Texto de espera en la segunda pantalla
   mensajeAceptacion.style.color = 'blue';
-  mensajeAceptacion.textContent = '⏳ Enviando aceptación, por favor espera...';
+  mensajeAceptacion.textContent = '⏳ Registrando firma digital y validando datos...';
   
-  const resultado = await llamarBackend('aceptarResponsabilidades', { cedula });
+  // 1. OBTENER DATOS LEGALES (IP y Dispositivo)
+  let ipUsuario = 'Desconocida';
+  try {
+    // Llamada rápida a una API pública para ver la IP
+    const resIp = await fetch('https://api.ipify.org?format=json');
+    const dataIp = await resIp.json();
+    ipUsuario = dataIp.ip;
+  } catch (e) {
+    console.warn('No se pudo obtener la IP, el firewall del usuario podría estar bloqueándolo.');
+  }
   
+  const datosDispositivo = navigator.userAgent; // Ej: Chrome en Windows, Safari en iPhone
+  
+  // 2. ENVIAR AL BACKEND
+  const resultado = await llamarBackend('aceptarResponsabilidades', { 
+    cedula: cedula,
+    ip: ipUsuario,
+    dispositivo: datosDispositivo
+  });
+  
+  // 3. RESPUESTA
   if (resultado.success) {
     mensajeAceptacion.style.color = 'green';
-    mensajeAceptacion.textContent = '✅ Aceptación registrada. Redirigiendo al dashboard...';
+    mensajeAceptacion.textContent = '✅ Aceptación legal registrada con éxito. Redirigiendo...';
     
     setTimeout(() => {
       window.location.href = 'dashboard.html';
