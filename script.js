@@ -1,7 +1,7 @@
 // ============================
 // CONFIGURACIÓN
 // ============================
-const API_URL = 'https://script.google.com/macros/s/AKfycbzegR77wLu8UIGYOAF31195SgZ4NloZO46CAOOKsbdhstSNwh2-8ohuycvNqKADR3kS/exec'; // Reemplaza con la URL de tu App Script
+const API_URL = 'https://script.google.com/macros/s/AKfycbwVTljRY15AXjB27K4w5j_os4K2jAvQcI3r1viawDqU12NOJ__JsKVrKTwTIBE9GRVx/exec'; // Reemplaza con la URL de tu App Script
 
 // Elementos del DOM
 const pantallaLogin = document.getElementById('pantalla-login');
