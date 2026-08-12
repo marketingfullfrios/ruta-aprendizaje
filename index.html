@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capacitación - Ingreso</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Pantalla 1: Ingreso de cédula -->
+    <div id="pantalla-login" class="pantalla">
+      <div class="card">
+        <h1>Bienvenido a la Capacitación</h1>
+        <p>Ingresa tu número de cédula para continuar</p>
+        <form id="formLogin">
+          <input type="text" id="cedulaInput" placeholder="Cédula" required>
+          <button type="submit">Continuar</button>
+        </form>
+        <div id="mensajeError" class="error"></div>
+      </div>
+    </div>
+
+    <!-- Pantalla 2: Confirmación de datos y aceptación -->
+    <div id="pantalla-aceptacion" class="pantalla" style="display:none;">
+      <div class="card">
+        <h1>Confirmación de datos</h1>
+        <div id="datosUsuario"></div>
+        <div class="declaracion">
+          <p><strong>Declaración de responsabilidad:</strong></p>
+          <p>
+            Yo, <span id="nombreCompleto"></span>, declaro que he recibido y leído 
+            toda la información de capacitación, comprendo los procesos y 
+            procedimientos de la empresa, y me comprometo a aplicarlos en mi 
+            trabajo diario. Asumo la responsabilidad por el contenido visto y 
+            entendido.
+          </p>
+        </div>
+        <button id="btnAceptar">Acepto y me responsabilizo</button>
+        <div id="mensajeAceptacion" class="mensaje"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
