@@ -2,7 +2,7 @@
 // CONFIGURACIÓN
 // ============================
 // Asegúrate de que esta URL sea la correcta de tu última implementación
-const API_URL = 'https://script.google.com/macros/s/AKfycbwgIX-hNGMdUozL7lBsHrNmkTBGSBzl_j0MJxibUh_bX0A9UC5REd0A3oitcFmYUvX6/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwdoJaXr5_jf8FABMHYtactmBQJ9RwKV5EDJVkQbx8X-0WcU8FXgjtU7mxSRB2yD0WF/exec';
 
 // Elementos del DOM
 const pantallaLogin = document.getElementById('pantalla-login');
