@@ -42,27 +42,46 @@ async function llamarBackend(accion, datos = {}) {
 // ============================
 // MANEJO DEL LOGIN (Pantalla 1)
 // ============================
+// ============================
+// MANEJO DEL LOGIN (Pantalla 1)
+// ============================
 formLogin.addEventListener('submit', async (e) => {
   e.preventDefault();
   const cedula = cedulaInput.value.trim();
+  
   if (!cedula) {
+    mensajeError.style.color = 'red';
     mensajeError.textContent = 'Por favor ingresa tu cédula.';
     return;
   }
   
-  mensajeError.textContent = '';
+  // 1. ESTADO DE ESPERA
+  mensajeError.style.color = 'blue'; // Puedes cambiar el color según tu diseño
+  mensajeError.textContent = '⏳ Verificando, por favor espera...';
+  cedulaInput.disabled = true; // Bloqueamos el input mientras consulta
+  
+  // Llamada al backend
   const resultado = await llamarBackend('verificarUsuario', { cedula });
   
+  // Desbloqueamos el input en cuanto llega la respuesta
+  cedulaInput.disabled = false; 
+  
+  // 2. ESTADO DE NO AUTORIZADO / NO REGISTRADO
   if (!resultado.success) {
-    mensajeError.textContent = resultado.mensaje || 'Error al verificar usuario.';
+    mensajeError.style.color = 'red';
+    // El backend enviará: "Usuario no autorizado..." o "Cédula no registrada..."
+    // Le agregamos un ícono para que sea más visible
+    mensajeError.textContent = '❌ ' + (resultado.mensaje || 'Usted no está autorizado.');
     return;
   }
   
+  // Limpiamos el mensaje si todo sale bien
+  mensajeError.textContent = '';
+  
   // Si el usuario ya aceptó anteriormente, redirigir directamente al dashboard
   if (resultado.yaAcepto) {
-    // Guardar datos en localStorage para la sesión
     localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
-    window.location.href = 'dashboard.html'; // (crearemos después)
+    window.location.href = 'dashboard.html'; 
     return;
   }
   
