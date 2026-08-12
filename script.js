@@ -109,6 +109,15 @@ function mostrarPantallaAceptacion(usuario) {
 // ACEPTACIÓN DE RESPONSABILIDADES (Pantalla 2)
 // ============================
 btnAceptar.addEventListener('click', async () => {
+  // --- NUEVA VALIDACIÓN LEGAL ---
+  const checkLegal = document.getElementById('checkLegal');
+  if (!checkLegal.checked) {
+    mensajeAceptacion.style.color = 'red';
+    mensajeAceptacion.textContent = '❌ Debes marcar la casilla para aceptar los términos.';
+    return; // Evita que el código continúe si no ha marcado la casilla
+  }
+  // ------------------------------
+
   const cedula = btnAceptar.dataset.cedula;
   btnAceptar.disabled = true;
   
